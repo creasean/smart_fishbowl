@@ -1,2 +1,199 @@
-﻿<!DOCTYPE html>
-<html><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><head><title></title><meta http_quiv="content-type" content="text/html; charset=utf-8"><link rel="stylesheet" type="text/css" href="index_style.css"></head><body><div class="hpa" style="width:210mm;height:296.99mm;"><div class="hcD" style="left:30mm;top:35mm;"><div class="hcI"><div class="hls ps0" style="line-height:2.79mm;white-space:nowrap;left:0mm;top:-0.18mm;height:3.53mm;width:150mm;"><span class="hrt cs0">안녕하세요 김종석입니다.</span></div><div class="hls ps0" style="line-height:2.79mm;white-space:nowrap;left:0mm;top:5.47mm;height:3.53mm;width:150mm;"></div><div class="hls ps0" style="line-height:2.79mm;white-space:nowrap;left:0mm;top:11.11mm;height:3.53mm;width:150mm;"><span class="hrt cs0">만나서 반갑습니다..</span></div><div class="hls ps0" style="line-height:2.79mm;white-space:nowrap;left:0mm;top:16.76mm;height:3.53mm;width:150mm;"></div><div class="hls ps0" style="line-height:2.79mm;white-space:nowrap;left:0mm;top:22.40mm;height:3.53mm;width:150mm;"></div></div></div></div></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SUPERFACTORY </title>
+    <style>
+        .button {
+            width: 100px;
+            height: 50px;
+            background-color: gray;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .active {
+            background-color: green;
+        }
+
+        .sensor-value {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: #fce460;
+            margin: 10px;
+            font-size: 15px;
+            font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+    <center>
+    <h2>Smart Fish Bowl</h2>
+    <div class="sensor-value" id="humidity-value"></div>
+    <div class="sensor-value" id="temperature-value"></div>
+    <div class="sensor-value" id="water-temperature-value"></div>
+    <div class="sensor-value" id="PCB-temperature-value"></div>
+    <div class="sensor-value" id="water-level-value"></div>
+    <div>
+      <button class="button" id="button1" onclick="toggleButton1('button1')">Feeding click</button>
+      <button class="button" id="button2" onclick="toggleButton2('button2')">Light click</button>
+      <!-- <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
+
+      <!-- <button class="button" id="button1" onclick="toggleButton('button1')">aaa</button>
+      <button class="button" id="button2" onclick="toggleButton('button2')">BBB</button>
+      <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
+
+
+    </div>
+    </center>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script>
+    // Firebase 초기화
+    var firebaseConfig = {
+      // Firebase 설정 정보 입력
+        apiKey: "AIzaSyBjZbWD3oiGmtEbQphaTxmy87BcUeMrV-8",
+        authDomain: "fishbowl-ac748.firebaseapp.com",
+        databaseURL: "https://fishbowl-ac748-default-rtdb.firebaseio.com",
+        projectId: "fishbowl-ac748",
+        storageBucket: "fishbowl-ac748.appspot.com",
+        messagingSenderId: "658190513703",
+        appId: "1:658190513703:web:3fa0e024bec60cf9b28002",
+        measurementId: "G-Y0MZEGV1HB"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // 실시간 데이터베이스 참조
+    var database = firebase.database();
+
+    // 실내 습도 값 변경 감지
+    var humidityRef = database.ref('picoData/DHT11_H/value');
+    humidityRef.on('value', function(snapshot) {
+      var humidity = snapshot.val();
+      var humidityElement = document.getElementById('humidity-value');
+      humidityElement.textContent = "습도: " + humidity + "%";
+    });
+
+    // 실내 온도 값 변경 감지
+    var temperatureRef = database.ref('picoData/DHT11_T/value');
+    temperatureRef.on('value', function(snapshot) {
+      var temperature = snapshot.val();
+      var temperatureElement = document.getElementById('temperature-value');
+      temperatureElement.textContent = "온도: " + temperature + "°C";
+    });
+
+    // 어항 수온 값 변경 감지
+    var waterTemperatureRef = database.ref('picoData/WATER_T/value');
+    waterTemperatureRef.on('value', function(snapshot) {
+      var waterTemperature = snapshot.val();
+      var waterTemperatureElement = document.getElementById('water-temperature-value');
+      waterTemperatureElement.textContent = "수온: " + waterTemperature + "°C";
+    });
+
+    // PCB 온도 값 변경 감지
+    var PCBTemperatureRef = database.ref('picoData/PCB_T/value');
+    PCBTemperatureRef.on('value', function(snapshot) {
+      var PCBTemperature = snapshot.val();
+      var PCBTemperatureElement = document.getElementById('PCB-temperature-value');
+      PCBTemperatureElement.textContent = "PCB 온도: " + PCBTemperature + "°C";
+    });
+
+    // 어항 수량 값 변경 감지
+    var waterLevelRef = database.ref('picoData/WATER_LEVEL/value');
+    //  if waterLevelRef>=35000{
+    //     waterLevelmapping="FULL"
+    //   }
+    //   else  waterLevelRef>=30000{
+    //     waterLevelmapping="-1cm"
+    //   }
+    //   else waterLevelRef>=23000{
+    //     waterLevelmapping="-2cm"
+    //   }
+    //   else waterLevelRef>=18000{
+    //     waterLevelmapping="-3cm"
+    //   }
+    //   else waterLevelRef>=15000{
+    //     waterLevelmapping="-4cm"
+    //   }
+    //   else { waterLevelmapping="water PLZ"
+    //   }
+    waterLevelRef.on('value', function(snapshot) {
+      var waterLevel = snapshot.val();
+      var waterLevelElement = document.getElementById('water-level-value');
+      waterLevelElement.textContent = "수량: " + waterLevel;
+    });
+
+    var buttonStates = {
+        button1: false,
+        button2: false,
+    };
+    function toggleButton1(buttonId) {
+        var button = document.getElementById(buttonId);
+        buttonStates[buttonId] = !buttonStates[buttonId];
+        if (buttonStates[buttonId]) {
+            button.innerHTML = "Feeding On";
+            button.classList.add("active");
+        } else {
+            button.innerHTML = "Feeding Off";
+            button.classList.remove("active");
+        }
+        var stateValue = buttonStates[buttonId] ? 1 : 0;  //true와 false 대신에 1,0으로
+
+            // Save the button state to Firebase
+            saveButtonState1(buttonId, stateValue);
+        }
+
+    function saveButtonState1(buttonId, state) {
+        // Define the path in the Firebase database where you want to store the button state
+        var databaseRef = firebase.database().ref("webInput/DRUM_servo");
+        // Set the state value at the defined path
+        databaseRef.set(state)
+            .then(function() {
+                console.log("Button state saved:", buttonId, state);
+            })
+            .catch(function(error) {
+                console.error("Error saving button state:", error);
+            });
+        }
+        function toggleButton2(buttonId) {
+        var button = document.getElementById(buttonId);
+        buttonStates[buttonId] = !buttonStates[buttonId];
+        if (buttonStates[buttonId]) {
+            button.innerHTML = "Light On";
+            button.classList.add("active");
+        } else {
+            button.innerHTML = "light Off";
+            button.classList.remove("active");
+        }
+        var stateValue = buttonStates[buttonId] ? 1 : 0;  //true와 false 대신에 1,0으로
+
+            // Save the button state to Firebase
+            // saveButtonState2(buttonId, buttonStates[buttonId]); //원본
+            saveButtonState2(buttonId, stateValue);
+        }
+
+    function saveButtonState2(buttonId, state) {
+        // Define the path in the Firebase database where you want to store the button state
+        var databaseRef = firebase.database().ref("webInput/LIGHT_led");
+        // Set the state value at the defined path
+        databaseRef.set(state)
+            .then(function() {
+                console.log("Button state saved:", buttonId, state);
+            })
+            .catch(function(error) {
+                console.error("Error saving button state:", error);
+            });
+        }
+
+
+  </script>
+
+</body>
+</html>
