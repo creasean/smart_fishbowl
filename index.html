@@ -22,12 +22,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 120px;
-            height: 120px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background-color: #fce460;
             margin: 10px;
-            font-size: 15px;
+            font-size: 30px;
             font-weight: bold;
     }
   </style>
@@ -35,21 +35,17 @@
 <body>
     <center>
     <h2>Smart Fish Bowl</h2>
+    <h3> "최종기록시각:"</h3>
+    <div id="timestampValue"></div>
     <div class="sensor-value" id="humidity-value"></div>
     <div class="sensor-value" id="temperature-value"></div>
     <div class="sensor-value" id="water-temperature-value"></div>
     <div class="sensor-value" id="PCB-temperature-value"></div>
     <div class="sensor-value" id="water-level-value"></div>
+        
     <div>
       <button class="button" id="button1" onclick="toggleButton1('button1')">Feeding click</button>
       <button class="button" id="button2" onclick="toggleButton2('button2')">Light click</button>
-      <!-- <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
-
-      <!-- <button class="button" id="button1" onclick="toggleButton('button1')">aaa</button>
-      <button class="button" id="button2" onclick="toggleButton('button2')">BBB</button>
-      <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
-
-
     </div>
     </center>
 
@@ -73,6 +69,16 @@
     // 실시간 데이터베이스 참조
     var database = firebase.database();
 
+      // 자료 입력 시각
+    var timestampRef = database.ref("picoData/TimeStamp/value");
+    // 값 변경 감지 및 표시
+    timestampRef.on("value", function(snapshot) {
+    var timestampValue = snapshot.val();
+    document.getElementById("timestampValue").textContent = timestampValue;
+    });
+
+      
+      
     // 실내 습도 값 변경 감지
     var humidityRef = database.ref('picoData/DHT11_H/value');
     humidityRef.on('value', function(snapshot) {
@@ -105,6 +111,7 @@
       PCBTemperatureElement.textContent = "PCB 온도: " + PCBTemperature + "°C";
     });
 
+ 
     // 어항 수량 값 변경 감지
     var waterLevelRef = database.ref('picoData/WATER_LEVEL/value');
     //  if waterLevelRef>=35000{
