@@ -39,17 +39,9 @@
     <div class="sensor-value" id="temperature-value"></div>
     <div class="sensor-value" id="water-temperature-value"></div>
     <div class="sensor-value" id="PCB-temperature-value"></div>
-    <div class="sensor-value" id="water-level-value"></div>
     <div>
       <button class="button" id="button1" onclick="toggleButton1('button1')">Feeding click</button>
       <button class="button" id="button2" onclick="toggleButton2('button2')">Light click</button>
-      <!-- <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
-
-      <!-- <button class="button" id="button1" onclick="toggleButton('button1')">aaa</button>
-      <button class="button" id="button2" onclick="toggleButton('button2')">BBB</button>
-      <button class="button" id="button3" onclick="toggleButton('button3')">Off</button> -->
-
-
     </div>
     </center>
 
@@ -82,7 +74,7 @@
     });
 
     // 실내 온도 값 변경 감지
-    var temperatureRef = database.ref('picoData/DHT11_T/value');
+    var temperatureRef = database.ref('SmartFishBowl/airTemp');
     temperatureRef.on('value', function(snapshot) {
       var temperature = snapshot.val();
       var temperatureElement = document.getElementById('temperature-value');
@@ -90,7 +82,7 @@
     });
 
     // 어항 수온 값 변경 감지
-    var waterTemperatureRef = database.ref('picoData/WATER_T/value');
+    var waterTemperatureRef = database.ref('SmartFishBowl/waterTemp');
     waterTemperatureRef.on('value', function(snapshot) {
       var waterTemperature = snapshot.val();
       var waterTemperatureElement = document.getElementById('water-temperature-value');
@@ -98,40 +90,15 @@
     });
 
     // PCB 온도 값 변경 감지
-    var PCBTemperatureRef = database.ref('picoData/PCB_T/value');
+    var PCBTemperatureRef = database.ref('SmartFishBowl/pcbTemp');
     PCBTemperatureRef.on('value', function(snapshot) {
       var PCBTemperature = snapshot.val();
       var PCBTemperatureElement = document.getElementById('PCB-temperature-value');
       PCBTemperatureElement.textContent = "PCB 온도: " + PCBTemperature + "°C";
     });
 
-    // 어항 수량 값 변경 감지
-    var waterLevelRef = database.ref('picoData/WATER_LEVEL/value');
-    //  if waterLevelRef>=35000{
-    //     waterLevelmapping="FULL"
-    //   }
-    //   else  waterLevelRef>=30000{
-    //     waterLevelmapping="-1cm"
-    //   }
-    //   else waterLevelRef>=23000{
-    //     waterLevelmapping="-2cm"
-    //   }
-    //   else waterLevelRef>=18000{
-    //     waterLevelmapping="-3cm"
-    //   }
-    //   else waterLevelRef>=15000{
-    //     waterLevelmapping="-4cm"
-    //   }
-    //   else { waterLevelmapping="water PLZ"
-    //   }
-    waterLevelRef.on('value', function(snapshot) {
-      var waterLevel = snapshot.val();
-      var waterLevelElement = document.getElementById('water-level-value');
-      waterLevelElement.textContent = "수량: " + waterLevel;
-    });
-
     var buttonStates = {
-        button1: false,
+        button1: true,
         button2: false,
     };
     function toggleButton1(buttonId) {
@@ -152,7 +119,7 @@
 
     function saveButtonState1(buttonId, state) {
         // Define the path in the Firebase database where you want to store the button state
-        var databaseRef = firebase.database().ref("webInput/DRUM_servo");
+        var databaseRef = firebase.database().ref("SmartFishBowl/feed");
         // Set the state value at the defined path
         databaseRef.set(state)
             .then(function() {
@@ -181,7 +148,7 @@
 
     function saveButtonState2(buttonId, state) {
         // Define the path in the Firebase database where you want to store the button state
-        var databaseRef = firebase.database().ref("webInput/LIGHT_led");
+        var databaseRef = firebase.database().ref("SmartFishBowl/led");
         // Set the state value at the defined path
         databaseRef.set(state)
             .then(function() {
