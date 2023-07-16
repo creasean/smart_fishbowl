@@ -59,14 +59,14 @@
     // Firebase 초기화
     var firebaseConfig = {
       // Firebase 설정 정보 입력
-        apiKey: "AIzaSyBjZbWD3oiGmtEbQphaTxmy87BcUeMrV-8",
-        authDomain: "fishbowl-ac748.firebaseapp.com",
-        databaseURL: "https://fishbowl-ac748-default-rtdb.firebaseio.com",
-        projectId: "fishbowl-ac748",
-        storageBucket: "fishbowl-ac748.appspot.com",
-        messagingSenderId: "658190513703",
-        appId: "1:658190513703:web:3fa0e024bec60cf9b28002",
-        measurementId: "G-Y0MZEGV1HB"
+        apiKey: "AIzaSyCVdJTJTuEw_0U-_3qpU-ZlWjzXJBMYgCU",
+        authDomain: "sfb-optimization.firebaseapp.com",
+        databaseURL: "https://sfb-optimization-default-rtdb.firebaseio.com",
+        projectId: "sfb-optimization",
+        storageBucket: "sfb-optimization.appspot.com",
+        messagingSenderId: "416804122305",
+        appId: "1:416804122305:web:8116e1346da58f78f62e40",
+        measurementId: "G-LJZDS97CZ5"
     };
     firebase.initializeApp(firebaseConfig);
 
@@ -74,7 +74,7 @@
     var database = firebase.database();
 
     // 실내 습도 값 변경 감지
-    var humidityRef = database.ref('picoData/DHT11_H/value');
+    var humidityRef = database.ref('SmartFishBowl/airHumid');
     humidityRef.on('value', function(snapshot) {
       var humidity = snapshot.val();
       var humidityElement = document.getElementById('humidity-value');
