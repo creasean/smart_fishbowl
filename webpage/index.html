@@ -35,6 +35,7 @@
 <body>
     <center>
     <h2>Smart Fish Bowl</h2>
+    <div id="timestampValue"></div>
     <div class="sensor-value" id="humidity-value"></div>
     <div class="sensor-value" id="temperature-value"></div>
     <div class="sensor-value" id="water-temperature-value"></div>
@@ -64,6 +65,13 @@
 
     // 실시간 데이터베이스 참조
     var database = firebase.database();
+
+    // timeStamp
+    var timeStampRef = database.ref('SmartFishBowl/timeStamp');
+    timeStampRef.on('value', function(snapshot) {
+      var timestampValue = snapshot.val();
+      document.getElementById("timestampValue").textContent = timestampValue;
+    });
 
     // 실내 습도 값 변경 감지
     var humidityRef = database.ref('SmartFishBowl/airHumid');
@@ -158,7 +166,6 @@
                 console.error("Error saving button state:", error);
             });
         }
-
 
   </script>
 
