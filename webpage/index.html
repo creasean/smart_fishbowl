@@ -40,11 +40,11 @@
     <div class="sensor-value" id="temperature-value"></div>
     <div class="sensor-value" id="water-temperature-value"></div>
     <div class="sensor-value" id="PCB-temperature-value"></div>
+    <div id="lastFeedingTime"></div>
     <div>
       <button class="button" id="button1" onclick="toggleButton1('button1')">Feeding click</button>
       <button class="button" id="button2" onclick="toggleButton2('button2')">Light click</button>
     </div>
-    <div id="lastFeedingTime"></div>
     </center>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -77,7 +77,7 @@
   // lastFeedingtime
     var lastFeedtimeRef = database.ref('SmartFishBowl/lastFeeding');
     lastFeedtimeRef.on('value', function(snapshot) {
-      var lastFeedingTime = snapshot.val();
+        var lastFeedingTime = snapshot.val();
       document.getElementById("lastFeedingTime").textContent = lastFeedingTime;
     });
       
@@ -87,7 +87,7 @@
     humidityRef.on('value', function(snapshot) {
       var humidity = snapshot.val();
       var humidityElement = document.getElementById('humidity-value');
-      humidityElement.textContent = "습도: " + humidity + "%";
+      humidityElement.textContent = "실내습도: " + humidity + "%";
     });
 
     // 실내 온도 값 변경 감지
@@ -95,7 +95,7 @@
     temperatureRef.on('value', function(snapshot) {
       var temperature = snapshot.val();
       var temperatureElement = document.getElementById('temperature-value');
-      temperatureElement.textContent = "온도: " + temperature + "°C";
+      temperatureElement.textContent = "실내온도: " + temperature + "°C";
     });
 
     // 어항 수온 값 변경 감지
