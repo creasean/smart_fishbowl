@@ -44,6 +44,7 @@
       <button class="button" id="button1" onclick="toggleButton1('button1')">Feeding click</button>
       <button class="button" id="button2" onclick="toggleButton2('button2')">Light click</button>
     </div>
+    <div id="lastFeedingTime"></div>
     </center>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -72,6 +73,14 @@
       var timestampValue = snapshot.val();
       document.getElementById("timestampValue").textContent = timestampValue;
     });
+
+  // lastFeedingtime
+    var lastFeedtimeRef = database.ref('SmartFishBowl/lastFeeding');
+    lastFeedtimeRef.on('value', function(snapshot) {
+      var lastFeedingTime = snapshot.val();
+      document.getElementById("lastFeedingTime").textContent = lastFeedingTime;
+    });
+      
 
     // 실내 습도 값 변경 감지
     var humidityRef = database.ref('SmartFishBowl/airHumid');
